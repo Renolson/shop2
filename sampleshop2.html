@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CeylonCart – Electronics & More</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f6fbff; }
+    .product-card img { object-fit: cover; height: 170px; background: #e8e6ff; }
+    .category-tag {
+      font-size: 0.9em; padding: 0.2em 0.6em; border-radius: 12px;
+      background: #3e229e; color: white; margin-bottom: 0.5em; display:inline-block;
+      letter-spacing: 0.02em; font-weight: 500;
+    }
+    .rating { color: #fbbe1e; font-size:1em; }
+    .review { font-size: 0.92em; color: #4e4767; margin-bottom: 0.2em; }
+    nav.navbar { background: #3e229e !important; }
+    nav .navbar-brand { color: #ffd700 !important; font-weight: bold; letter-spacing:.05em;}
+    .btn-outline-primary { border-color: #4e23b2; color: #4e23b2; }
+    .btn-outline-primary:hover { background: #4e23b2; color: #fff }
+    h2, .text-primary { color: #3e229e !important }
+    .shipping { color: #6d6b7a }
+    .footer-bg { background: #2f185e; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">🛒 CeylonCart</a>
+      <ul class="navbar-nav ms-auto d-none d-lg-flex">
+        <li class="nav-item"><a class="nav-link active text-warning" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="#">Categories</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="#">Cart</a></li>
+      </ul>
+    </div>
+  </nav>
+  <section class="pt-4 pb-2" style="background:#eaf1fd;">
+    <div class="container">
+      <h2 class="mb-3 fw-semibold">Browse Departments</h2>
+      <div class="row g-2">
+        <div class="col-6 col-md-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Electronics">Electronics</button></div>
+        <div class="col-6 col-md-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Groceries">Groceries</button></div>
+        <div class="col-6 col-md-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Fashion">Fashion</button></div>
+        <div class="col-6 col-md-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Health & Beauty">Health & Beauty</button></div>
+        <div class="col-6 col-md-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Home Appliances">Home Appliances</button></div>
+        <div class="col-6 col-md-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Books & Stationery">Books & Stationery</button></div>
+        <div class="col-6 col-md-2 mt-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Kids & Toys">Kids & Toys</button></div>
+        <div class="col-6 col-md-2 mt-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Sports & Fitness">Sports & Fitness</button></div>
+        <div class="col-6 col-md-2 mt-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Automotive">Automotive</button></div>
+        <div class="col-6 col-md-2 mt-2"><button class="btn btn-outline-primary w-100 categoryBtn" data-category="Home & Living">Home & Living</button></div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="container py-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0 fw-bold">Top Deals</h2>
+        <button id="resetCategory" class="btn btn-link text-primary" style="text-decoration: underline;">Show All</button>
+      </div>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4" id="productGrid"></div>
+    </div>
+  </section>
+  <footer class="footer-bg text-light text-center p-4 mt-4">
+    <div>
+      <p style="letter-spacing:.05em;">© 2025 CeylonCart, Sri Lanka | Islandwide Delivery from Rs. 250</p>
+      <small class="d-block mb-2">Reach us: 011-7894561 (8AM–8PM) | help@ceyloncart.com</small>
+      <span class="badge text-bg-warning text-dark">All major cards & e-wallets accepted</span>
+    </div>
+  </footer>
+  <script>
+    // 10 categories × 11 = 110+ products, values changed, new reviews/fees
+    const products = [
+      // --- Electronics (11) ---
+      {name:"Samsung M54", category:"Electronics", image:"https://images.unsplash.com/photo-1510552776732-03e61cf4b144?auto=format&fit=crop&w=600&q=80", price:49250, shipping:550, rating:4.2, review:"Very dependable, fantastic battery!"},
+      {name:"LG C2 48\" OLED Evo TV", category:"Electronics", image:"https://images.unsplash.com/photo-1606813902778-0286c731b5af?auto=format&fit=crop&w=600&q=80", price:319900, shipping:1750, rating:4.7, review:"OLED has amazing blacks and color."},
+      {name:"Lenovo ThinkPad E14", category:"Electronics", image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80", price:199800, shipping:1700, rating:4.4, review:"Great build and keyboard."},
+      {name:"Soundcore Flare 2", category:"Electronics", image:"https://images.unsplash.com/photo-1507679622743-34a2d3dacff8?auto=format&fit=crop&w=600&q=80", price:15750, shipping:260, rating:4.8, review:"Big bass for small parties."},
+      {name:"Sony LinkBuds S", category:"Electronics", image:"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80", price:35500, shipping:530, rating:4.5, review:"Lightest earbuds, comfy fit."},
+      {name:"Canon M50 Mark II", category:"Electronics", image:"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80", price:154700, shipping:1650, rating:4.7, review:"Great vlog camera."},
+      {name:"WD Black SN850X 1TB SSD", category:"Electronics", image:"https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&w=600&q=80", price:34800, shipping:320, rating:4.6, review:"Blazing fast for gamers."},
+      {name:"Netgear Nighthawk XR1000", category:"Electronics", image:"https://images.unsplash.com/photo-1482062364825-616fd23b8fc1?auto=format&fit=crop&w=600&q=80", price:28700, shipping:340, rating:4.3, review:"Elite WiFi for big houses."},
+      {name:"BenQ GW2780 27\" Monitor", category:"Electronics", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:48900, shipping:710, rating:4.6, review:"Eye comfort and sharpness best."},
+      {name:"Apple iPad Air (2024)", category:"Electronics", image:"https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&w=600&q=80", price:232000, shipping:800, rating:4.6, review:"Super for reading and notes."},
+      {name:"Magicforce Shade Pro Keyboard", category:"Electronics", image:"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80", price:8500, shipping:360, rating:4.3, review:"Solid build, colored keys."},
+      // --- Groceries (11) ---
+      {name:"Mango, 1kg", category:"Groceries", image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80", price:920, shipping:320, rating:4.6, review:"Sweet and large mangoes."},
+      {name:"Dimbula Black Tea 500g", category:"Groceries", image:"https://images.unsplash.com/photo-1519864602405-cd288d4aac46?auto=format&fit=crop&w=600&q=80", price:1450, shipping:210, rating:4.9, review:"Deep flavor, best hot or iced."},
+      {name:"Heritage Seeni Sambol 180g", category:"Groceries", image:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80", price:370, shipping:120, rating:4.8, review:"Always a Lankan classic."},
+      {name:"Red Nadu Rice 2.5kg", category:"Groceries", image:"https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=600&q=80", price:620, shipping:190, rating:4.2, review:"Nutritious and fresh."},
+      {name:"Anchor Milk Powder 400g", category:"Groceries", image:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", price:590, shipping:160, rating:4.6, review:"Tastes fresh and rich."},
+      {name:"Highland Butter 100g", category:"Groceries", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:370, shipping:120, rating:4.8, review:"Fresh and creamy in all recipes."},
+      {name:"Janet Choco Ice Cream 1L", category:"Groceries", image:"https://images.unsplash.com/photo-1432139555190-58524dae6a55?auto=format&fit=crop&w=600&q=80", price:820, shipping:160, rating:4.7, review:"Best for summer parties!"},
+      {name:"Krest Chili Sauce 375ml", category:"Groceries", image:"https://images.unsplash.com/photo-1519864602405-cd288d4aac46?auto=format&fit=crop&w=600&q=80", price:290, shipping:85, rating:4.4, review:"Hot and tangy, great for snacks."},
+      {name:"Kist Mango Nectar 1L", category:"Groceries", image:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", price:620, shipping:90, rating:4.5, review:"Pure taste of real mango."},
+      {name:"Freshland Full Cream Milk 1L", category:"Groceries", image:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", price:260, shipping:120, rating:4.7, review:"Smooth and thick."},
+      {name:"Maggie Curry Cup Noodles 10pk", category:"Groceries", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:1070, shipping:100, rating:4.7, review:"Tastes just like homemade."},
+      // --- Fashion (11) ---
+      {name:"Puma Suede Classics", category:"Fashion", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:12600, shipping:270, rating:4.2, review:"Trendy and flexible!"},
+      {name:"Lavender Kurta - Ladies", category:"Fashion", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:3180, shipping:260, rating:4.6, review:"Soft and elegant for evening."},
+      {name:"AlphaFit Polo (Mens)", category:"Fashion", image:"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80", price:2970, shipping:220, rating:4.4, review:"Great for the office."},
+      {name:"Signature Batik Saree", category:"Fashion", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:14300, shipping:275, rating:4.7, review:"Best for weddings."},
+      {name:"Jockey Slim Fit Jeans", category:"Fashion", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:7300, shipping:260, rating:4.8, review:"Great stretch denim."},
+      {name:"ToTie Silk Necktie", category:"Fashion", image:"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80", price:1750, shipping:110, rating:4.2, review:"Freshest color selection!"},
+      {name:"Bata Power School Shoes", category:"Fashion", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:2790, shipping:110, rating:4.9, review:"Strong build for daily use."},
+      {name:"AddySnap Sports Cap", category:"Fashion", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:1400, shipping:95, rating:4.4, review:"Sharp look for all weathers."},
+      {name:"MysticBrown Handbag", category:"Fashion", image:"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80", price:4700, shipping:140, rating:4.7, review:"Fashionable and practical."},
+      {name:"Classic Leather Belt", category:"Fashion", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:1950, shipping:110, rating:4.2, review:"Sturdy and elegant."},
+      {name:"MiniBreeze Kid's Raincoat", category:"Fashion", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:1690, shipping:60, rating:4.8, review:"Lightweight and very cute."},
+
+      // --- Health & Beauty (11) ---
+      {name:"Clarins Herbal Face Wash", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=600&q=80", price:1010, shipping:75, rating:4.8, review:"Cool and refreshing."},
+      {name:"Pantene Silky Smooth Shampoo", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1519864602405-cd288d4aac46?auto=format&fit=crop&w=600&q=80", price:660, shipping:55, rating:4.6, review:"Smooths my hair so much."},
+      {name:"Colgate Expert Fresh", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80", price:310, shipping:27, rating:4.9, review:"Keeps teeth really clean."},
+      {name:"Gillette Blue 3 Razor", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:1490, shipping:25, rating:4.7, review:"Best budget professional shave."},
+      {name:"AloeVera Neem Face Mask", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=600&q=80", price:740, shipping:50, rating:4.8, review:"Calming on skin."},
+      {name:"SheaMoisture Hand Wash", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", price:510, shipping:30, rating:4.5, review:"Gentle and smells nice."},
+      {name:"Nivea Soft Skin Cream", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:710, shipping:60, rating:4.7, review:"Easy to apply every day."},
+      {name:"Dove Classic Soap Pack", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=600&q=80", price:390, shipping:15, rating:4.3, review:"Cleans without dryness."},
+      {name:"SweetRose Body Mist", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1519864602405-cd288d4aac46?auto=format&fit=crop&w=600&q=80", price:870, shipping:90, rating:4.5, review:"Just the right floral."},
+      {name:"BossAura Perfume", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80", price:2890, shipping:100, rating:4.8, review:"Long lasting fresh."},
+      {name:"Oral-B Action Toothbrush", category:"Health & Beauty", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:520, shipping:18, rating:4.9, review:"Dentist recommended always."},
+
+      // --- Home Appliances (11) ---
+      {name:"Panasonic 1.5L Mixer Grinder", category:"Home Appliances", image:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", price:15890, shipping:420, rating:4.7, review:"Powerful for spices."},
+      {name:"Abans Pressure Cooker", category:"Home Appliances", image:"https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=600&q=80", price:8990, shipping:250, rating:4.9, review:"Whistles quickly."},
+      {name:"Orient Stand Fan", category:"Home Appliances", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:3740, shipping:180, rating:4.6, review:"Moves loads of air."},
+      {name:"Prestige Electric Rice Cooker", category:"Home Appliances", image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80", price:14100, shipping:480, rating:4.8, review:"No more sticky rice."},
+      {name:"Rinnai Double Gas Stove", category:"Home Appliances", image:"https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=600&q=80", price:10400, shipping:430, rating:4.7, review:"Very fuel efficient."},
+      {name:"Dome Electric Kettle", category:"Home Appliances", image:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", price:3490, shipping:140, rating:4.7, review:"Boils water fast."},
+      {name:"Electrolux Freezer 185L", category:"Home Appliances", image:"https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=600&q=80", price:144900, shipping:3600, rating:4.6, review:"Maintains low cooling."},
+      {name:"Sharp Solo Microwave", category:"Home Appliances", image:"https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=600&q=80", price:26990, shipping:590, rating:4.7, review:"Simple and helpful."},
+      {name:"KDK Wall Fan 16\"", category:"Home Appliances", image:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", price:5750, shipping:215, rating:4.8, review:"Quiet and cool breeze."},
+      {name:"PureAqua Water Filter 5L", category:"Home Appliances", image:"https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=600&q=80", price:13900, shipping:330, rating:4.8, review:"Filters nicely."},
+      {name:"Samsung Ecobubble Washing Machine", category:"Home Appliances", image:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", price:109990, shipping:1850, rating:4.6, review:"Energy saving and quick."},
+
+      // --- Books & Stationery (11) ---
+      {name:"Oxford Advanced Dictionary", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:2700, shipping:135, rating:4.8, review:"Must-have for O/L exams."},
+      {name:"Atlas Notebook Set 6pk", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80", price:710, shipping:90, rating:4.9, review:"Fantastic paper."},
+      {name:"Pilot G2 Pens 4pk", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:390, shipping:36, rating:4.8, review:"Never skips, always smooth."},
+      {name:"Kids' Classics Storybook", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80", price:1120, shipping:80, rating:4.6, review:"Great for bedtime reading."},
+      {name:"Selected Poems - Ediriweera S.", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80", price:2450, shipping:75, rating:4.7, review:"Rich local poetry."},
+      {name:"Camel Sketching Kit", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:935, shipping:40, rating:4.8, review:"Ideal for artists."},
+      {name:"Citizen DT220 Calculator", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:1240, shipping:55, rating:4.5, review:"Easy for advanced maths."},
+      {name:"DeskFit Organizer", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:1590, shipping:50, rating:4.4, review:"Neatly stores everything."},
+      {name:"Colouring Pad 60pg", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80", price:590, shipping:25, rating:4.6, review:"Thick paper, doesn’t bleed."},
+      {name:"Oxford Hard Cover Notebook", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:790, shipping:28, rating:4.5, review:"Durable and looks smart."},
+      {name:"Jaya Stationers HB Pencils (12)", category:"Books & Stationery", image:"https://images.unsplash.com/photo-1519864602405-cd288d4aac46?auto=format&fit=crop&w=600&q=80", price:180, shipping:12, rating:4.7, review:"Sharpen easy, clean lines."},
+
+      // --- Kids & Toys (11) ---
+      {name:"Rainbow Race Car", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80", price:1290, shipping:80, rating:4.9, review:"All-time favorite for my son."},
+      {name:"Wooden Animals Puzzle", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:2350, shipping:150, rating:4.8, review:"Challenging and eco-friendly."},
+      {name:"Rattle Set for Babies", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:790, shipping:22, rating:4.7, review:"Safe and fun to use."},
+      {name:"Creative Drawing Book", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80", price:400, shipping:16, rating:4.8, review:"Kids stay busy for hours."},
+      {name:"RC Helicopter Toy", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:4230, shipping:260, rating:4.9, review:"High flying fun!"},
+      {name:"Big Brown Teddy", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:2090, shipping:65, rating:4.9, review:"Great for cuddling."},
+      {name:"Plastic Bricks Set", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80", price:2290, shipping:92, rating:4.8, review:"Problem solving skills improved."},
+      {name:"Bubble Fun Gun", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:770, shipping:32, rating:4.5, review:"Summer days made easy."},
+      {name:"Stuffed Elephant - Lanka", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:2020, shipping:66, rating:4.8, review:"Sri Lankan wildlife fun."},
+      {name:"UrbanScoot Kids Scooter", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:5900, shipping:240, rating:4.7, review:"Safe rides every evening."},
+      {name:"TinyCraft Birthday Kit", category:"Kids & Toys", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:990, shipping:56, rating:4.6, review:"Great for home activity."},
+
+      // --- Sports & Fitness (11) ---
+      {name:"MRF Genius Cricket Bat", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:8300, shipping:410, rating:4.9, review:"Bat of the pros."},
+      {name:"LiNing Ultra 600 Badminton", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:4690, shipping:199, rating:4.2, review:"Lightweight, durable."},
+      {name:"Nike Trainer Football", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:2760, shipping:155, rating:4.5, review:"Awesome ball control."},
+      {name:"Stag Table Tennis Bat Set", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:2540, shipping:110, rating:4.7, review:"Easy to use paddles."},
+      {name:"Sundown Yoga Mat 8mm", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:3950, shipping:88, rating:4.8, review:"No slip, thick pad."},
+      {name:"StronGum Hex Dumbbell Pair 10KG", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:13450, shipping:199, rating:4.9, review:"Weights that last."},
+      {name:"ActiveSmart Skipping Rope", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:710, shipping:22, rating:4.6, review:"Comfortable grip, good rope."},
+      {name:"WildRide Cycling Helmet", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:3850, shipping:63, rating:4.4, review:"Light and safe."},
+      {name:"Honor Band 9 Tracker", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:18900, shipping:105, rating:4.8, review:"Tracks my steps accurately."},
+      {name:"TT Bat Case", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:640, shipping:34, rating:4.5, review:"Hard shell, protects bat well."},
+      {name:"Shatterproof Sports Water Bottle 1L", category:"Sports & Fitness", image:"https://images.unsplash.com/photo-1469398715555-76331a90b6ba?auto=format&fit=crop&w=600&q=80", price:960, shipping:29, rating:4.7, review:"Ultralight, keeps cool."},
+
+      // --- Automotive (11) ---
+      {name:"Lucas Car Battery", category:"Automotive", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:16750, shipping:700, rating:4.7, review:"Trusted for 2+ years."},
+      {name:"Splash Car Freshener", category:"Automotive", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:290, shipping:30, rating:4.6, review:"Keeps cabin smelling nice."},
+      {name:"TyreWiz Pressure Gauge", category:"Automotive", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:1050, shipping:38, rating:4.5, review:"Easy accurate tyre check."},
+      {name:"Bosch Wipers All Size", category:"Automotive", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:1990, shipping:88, rating:4.6, review:"Easy to fit, works in rain."},
+      {name:"3M Car Wax Kit", category:"Automotive", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:2190, shipping:96, rating:4.6, review:"Gives shine, long lasting."},
+      {name:"Engine Guard 10W-30 Oil 4L", category:"Automotive", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:7850, shipping:120, rating:4.8, review:"Little goes a long way."},
+      {name:"AutoPro Car Vacuum", category:"Automotive", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:3990, shipping:75, rating:4.7, review:"Compact and easy storage."},
+      {name:"Universal Fit Rubber Mats", category:"Automotive", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:4250, shipping:60, rating:4.9, review:"Easy to wash, fits well."},
+      {name:"Blaze LED Fog Lamp Pair", category:"Automotive", image:"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80", price:7690, shipping:199, rating:4.5, review:"Brighter road at night."},
+      {name:"JumpStart Power Cable", category:"Automotive", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:2900, shipping:58, rating:4.7, review:"Saved me on a road trip."},
+      {name:"AutoCool Windshield Shade", category:"Automotive", image:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80", price:1150, shipping:23, rating:4.8, review:"No more hot dashboard."},
+
+      // --- Home & Living (11) ---
+      {name:"SilkySoft Cushion Covers (2)", category:"Home & Living", image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80", price:1540, shipping:45, rating:4.7, review:"Colors are beautiful!"},
+      {name:"Doormat Heavy Fiber", category:"Home & Living", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:990, shipping:20, rating:4.8, review:"Long lasting doormat."},
+      {name:"SkyGlow Night Lamp", category:"Home & Living", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:950, shipping:33, rating:4.6, review:"Best for kid's room."},
+      {name:"Abstract Art Wall Frame", category:"Home & Living", image:"https://images.unsplash.com/photo-1519864602405-cd288d4aac46?auto=format&fit=crop&w=600&q=80", price:7400, shipping:115, rating:4.8, review:"Gorgeously painted."},
+      {name:"Kitchen Dish Drying Rack", category:"Home & Living", image:"https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=600&q=80", price:2250, shipping:75, rating:4.5, review:"Holds lots, sturdy steel."},
+      {name:"Porcelain Tea Set", category:"Home & Living", image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80", price:6100, shipping:79, rating:4.9, review:"Makes teatime special."},
+      {name:"Microfiber Laundry Basket", category:"Home & Living", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:1540, shipping:37, rating:4.7, review:"Fits plenty, easy carry."},
+      {name:"Monsoon Mosquito Net (Queen)", category:"Home & Living", image:"https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=600&q=80", price:2500, shipping:65, rating:4.8, review:"Much better sleep at night."},
+      {name:"Vanilla Scented Candle 3pk", category:"Home & Living", image:"https://images.unsplash.com/photo-1519864602405-cd288d4aac46?auto=format&fit=crop&w=600&q=80", price:1100, shipping:21, rating:4.9, review:"Fragrant, burns long."},
+      {name:"Smart Mist Essential Oil Diffuser", category:"Home & Living", image:"https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=600&q=80", price:4420, shipping:90, rating:4.8, review:"Fills house with aroma."},
+      {name:"Steel Thermo Flask (1L)", category:"Home & Living", image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80", price:1650, shipping:30, rating:4.5, review:"Keeps drinks cold/hot."},
+    ];
+
+    function renderProducts(category = null) {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      let list = products;
+      if(category) list = products.filter(p => p.category === category);
+      list.forEach(p => {
+        grid.innerHTML += `
+          <div class="col">
+            <div class="card h-100 product-card shadow-sm">
+              <img src="${p.image}" class="card-img-top" alt="${p.name}">
+              <div class="card-body">
+                <span class="category-tag mb-2">${p.category}</span>
+                <h6 class="card-title mb-1 fw-semibold">${p.name}</h6>
+                <p class="mb-1 fw-bold">Rs. ${p.price.toLocaleString()}</p>
+                <div class="shipping mb-1">Location Shipping: Rs. ${p.shipping}</div>
+                <div class="rating mb-1">${'⭐'.repeat(Math.round(p.rating))} <span class="text-muted">(${p.rating})</span></div>
+                <div class="review mb-2">${p.review}</div>
+                <button class="btn btn-primary w-100">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      if(list.length < 1) grid.innerHTML = '<div class="col"><div class="alert alert-warning">No products in this category.</div></div>';
+    }
+    renderProducts();
+    document.querySelectorAll('.categoryBtn').forEach(btn => {
+      btn.addEventListener('click', e => renderProducts(btn.dataset.category));
+    });
+    document.getElementById('resetCategory').addEventListener('click', e => renderProducts());
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
